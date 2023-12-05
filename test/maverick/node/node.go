@@ -1402,10 +1402,7 @@ func LoadStateFromDBOrGenesisDocProvider(
 		// was changed, accidentally or not). Also good for audit trail.
 		saveGenesisDoc(stateDB, genDoc)
 	}
-	stateStore := sm.NewStore(stateDB, sm.StoreOptions{
-		DiscardABCIResponses: false,
-	})
-	state, err := stateStore.LoadFromDBOrGenesisDoc(genDoc)
+	state, err := sm.MakeGenesisState(genDoc)
 	if err != nil {
 		return sm.State{}, nil, err
 	}

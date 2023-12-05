@@ -24,7 +24,6 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/evidence"
 
-	cmtjson "github.com/tendermint/tendermint/libs/json"
 	"github.com/tendermint/tendermint/libs/log"
 	cmtpubsub "github.com/tendermint/tendermint/libs/pubsub"
 	"github.com/tendermint/tendermint/libs/service"
@@ -724,7 +723,17 @@ func NewNode(config *cfg.Config,
 		DiscardABCIResponses: config.Storage.DiscardABCIResponses,
 	})
 
-	state, genDoc, err := LoadStateFromDBOrGenesisDocProvider(stateDB, genesisDocProvider)
+	genDoc, err := genesisDocProvider()
+	if err != nil {
+		return nil, err
+	}
+
+	err = genDoc.ValidateAndComplete()
+	if err != nil {
+		return nil, fmt.Errorf("error in genesis doc: %w", err)
+	}
+
+	state, err := loadStateFromDBOrGenesisDocProvider(stateStore, genDoc)
 	if err != nil {
 		return nil, err
 	}
@@ -1386,66 +1395,34 @@ func makeNodeInfo(
 
 //------------------------------------------------------------------------------
 
-var genesisDocKey = []byte("genesisDoc")
-
-// LoadStateFromDBOrGenesisDocProvider attempts to load the state from the
+// loadStateFromDBOrGenesisDocProvider attempts to load the state from the
 // database, or creates one using the given genesisDocProvider. On success this also
 // returns the genesis doc loaded through the given provider.
-func LoadStateFromDBOrGenesisDocProvider(
-	stateDB dbm.DB,
-	genesisDocProvider GenesisDocProvider,
-) (sm.State, *types.GenesisDoc, error) {
-	// Get genesis doc
-	genDoc, err := loadGenesisDoc(stateDB)
+func loadStateFromDBOrGenesisDocProvider(
+	stateStore sm.Store,
+	genDoc *types.GenesisDoc,
+) (sm.State, error) {
+
+	// 1. Attempt to load state form the database
+	state, err := stateStore.Load()
 	if err != nil {
-		genDoc, err = genesisDocProvider()
+		return sm.State{}, err
+	}
+
+	if state.IsEmpty() {
+		// 2. If it's not there, load it from the genesis doc
+		state, err = sm.MakeGenesisState(genDoc)
 		if err != nil {
-			return sm.State{}, nil, err
+			return sm.State{}, err
 		}
-		// save genesis doc to prevent a certain class of user errors (e.g. when it
-		// was changed, accidentally or not). Also good for audit trail.
-		if err := saveGenesisDoc(stateDB, genDoc); err != nil {
-			return sm.State{}, nil, err
+
+		// 3. Save the new state to disk
+		if err := stateStore.Save(state); err != nil {
+			return sm.State{}, err
 		}
 	}
-	stateStore := sm.NewStore(stateDB, sm.StoreOptions{
-		DiscardABCIResponses: false,
-	})
-	state, err := stateStore.LoadFromDBOrGenesisDoc(genDoc)
-	if err != nil {
-		return sm.State{}, nil, err
-	}
-	return state, genDoc, nil
-}
 
-// panics if failed to unmarshal bytes
-func loadGenesisDoc(db dbm.DB) (*types.GenesisDoc, error) {
-	b, err := db.Get(genesisDocKey)
-	if err != nil {
-		panic(err)
-	}
-	if len(b) == 0 {
-		return nil, errors.New("genesis doc not found")
-	}
-	var genDoc *types.GenesisDoc
-	err = cmtjson.Unmarshal(b, &genDoc)
-	if err != nil {
-		panic(fmt.Sprintf("Failed to load genesis doc due to unmarshaling error: %v (bytes: %X)", err, b))
-	}
-	return genDoc, nil
-}
-
-// panics if failed to marshal the given genesis document
-func saveGenesisDoc(db dbm.DB, genDoc *types.GenesisDoc) error {
-	b, err := cmtjson.Marshal(genDoc)
-	if err != nil {
-		return fmt.Errorf("failed to save genesis doc due to marshaling error: %w", err)
-	}
-	if err := db.SetSync(genesisDocKey, b); err != nil {
-		return err
-	}
-
-	return nil
+	return state, nil
 }
 
 func createAndStartPrivValidatorSocketClient(

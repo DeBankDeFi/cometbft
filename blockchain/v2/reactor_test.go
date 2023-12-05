@@ -518,18 +518,14 @@ func newReactorStore(
 		panic(fmt.Errorf("error start app: %w", err))
 	}
 
-	stateDB := dbm.NewMemDB()
 	blockStore := store.NewBlockStore(dbm.NewMemDB())
-	stateStore := sm.NewStore(stateDB, sm.StoreOptions{
-		DiscardABCIResponses: false,
-	})
-	state, err := stateStore.LoadFromDBOrGenesisDoc(genDoc)
+	state, err := sm.MakeGenesisState(genDoc)
 	if err != nil {
 		panic(fmt.Errorf("error constructing state from genesis file: %w", err))
 	}
 
 	db := dbm.NewMemDB()
-	stateStore = sm.NewStore(db, sm.StoreOptions{
+	stateStore := sm.NewStore(db, sm.StoreOptions{
 		DiscardABCIResponses: false,
 	},
 	)
