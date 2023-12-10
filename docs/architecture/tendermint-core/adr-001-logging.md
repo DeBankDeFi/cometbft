@@ -32,7 +32,7 @@ type Logger interface {
 }
 ```
 
-On a side note: difference between `Info` and `Notice` is subtle. We probably
+On a side note: the difference between `Info` and `Notice` is subtle. We probably
 could do without `Notice`. Don't think we need `Panic` or `Fatal` as a part of
 the interface. These funcs could be implemented as helpers. In fact, we already
 have some in `tmlibs/common`.
@@ -43,7 +43,7 @@ have some in `tmlibs/common`.
 
 `Notice` should become `Info`, `Warn` either `Error` or `Debug` depending on the message, `Crit` -> `Error`.
 
-This interface should go into `tmlibs/log`. All libraries which are part of the core (tendermint/tendermint) should obey it.
+This interface should go into `tmlibs/log`. All libraries that are part of the core (tendermint/tendermint) should obey it.
 
 ### 2) Logger with our current formatting
 
@@ -199,7 +199,7 @@ Dynamic logger, which could be turned off for some modules at runtime. Public in
 
 ### Negative
 
-We may loose the ability to color keys in keyvalue pairs. go-kit allow you to easily change foreground / background colors of the whole string, but not its parts.
+We may lose the ability to color keys in keyvalue pairs. go-kit allow you to easily change foreground / background colors of the whole string, but not its parts.
 
 ### Neutral
 
