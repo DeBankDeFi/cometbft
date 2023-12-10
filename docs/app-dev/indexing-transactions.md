@@ -45,10 +45,10 @@ be turned off regardless of other values provided.
 [tx-index]
 
 # The backend database to back the indexer.
-# If indexer is "null", no indexer service will be used.
+# If the indexer is "null", no indexer service will be used.
 #
 # The application will set which txs to index. In some cases a node operator will be able
-# to decide which txs to index based on configuration set in the application.
+# to decide which txs to index based on the configuration set in the application.
 #
 # Options:
 #   1) "null"
