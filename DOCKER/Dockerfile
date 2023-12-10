@@ -24,7 +24,7 @@ LABEL maintainer="hello@informal.systems"
 ENV CMTHOME /cometbft
 
 # OS environment setup
-# Set user right away for determinism, create directory for persistence and give our user ownership
+# Set user right away for determinism, create a directory for persistence and give our user ownership
 # jq and curl used for extracting `pub_key` from private validator while
 # deploying CometBFT with Kubernetes. It is nice to have bash so the users
 # could execute bash commands.
