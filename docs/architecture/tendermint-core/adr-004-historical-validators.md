@@ -9,7 +9,7 @@ If you were offline for a long time, there is no way to reconstruct past validat
 
 For every block, store a new structure that contains either the latest validator set,
 or the height of the last block for which the validator set changed. Note this is not
-the height of the block which returned the validator set change itself, but the next block,
+the height of the block that returned the validator set change itself, but the next block,
 ie. the first block it comes into effect for.
 
 Storing the validators will be handled by the `state` package.
