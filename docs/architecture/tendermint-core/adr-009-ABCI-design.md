@@ -60,7 +60,7 @@ implementation types, so its unfitting to use `oneof` or `enum`.
 
 The address for ED25519 pubkey is the RIPEMD160 of the Amino
 encoded pubkey. This introduces an Amino dependency in the address generation,
-a functionality that is widely required and should be easy to compute as
+a functionality that is widely required and should be as easy to compute as
 possible.
 
 ### Validators
@@ -194,7 +194,7 @@ larger than addresses and in the future, with quantum computers, will be much
 larger. The overhead of passing them, especially during fast-sync, is
 significant.
 
-Additional, addresses are changing to be simpler to compute, further removing
+Additionally, addresses are changing to be simpler to compute, further removing
 the need to include pubkeys here.
 
 In short, ABCI developers must be aware of both addresses and public keys.
