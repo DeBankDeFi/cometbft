@@ -36,7 +36,7 @@ Example data:
 If the user wants to receive only a subset of transactions, ABCI-app must
 return a list of tags with a `DeliverTx` response. These tags will be parsed and
 matched with the current queries (subscribers). If the query matches the tags,
-subscriber will get the transaction event.
+the subscriber will get the transaction event.
 
 ```
 /subscribe?query="tm.event = Tx AND tx.hash = AB0023433CF0334223212243BDD AND abci.account.invoice.number = 22"
