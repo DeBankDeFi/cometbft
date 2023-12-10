@@ -15,7 +15,7 @@ doing so will cause Tendermint to ignore any private validator files.
 
 TCPVal will listen on the given address for incoming connections from an external
 private validator process. It will halt any operation until at least one external
-process successfully connected.
+process is successfully connected.
 
 The external priv_validator process will dial the address to connect to
 Tendermint, and then Tendermint will send requests on the ensuing connection to
