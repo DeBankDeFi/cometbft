@@ -1,6 +1,6 @@
 package types
 
-var disableABCIQueryMutex bool
+var disableABCIQueryMutex = true
 
 const (
 	FlagDisableCheckTx = "disable-checktx"
