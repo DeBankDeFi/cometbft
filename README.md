@@ -175,7 +175,7 @@ maintains [cometbft.com](https://cometbft.com).
 [Blockchain]: https://en.wikipedia.org/wiki/Blockchain
 [version-badge]: https://img.shields.io/github/v/release/cometbft/cometbft.svg
 [version-url]: https://github.com/cometbft/cometbft/releases/latest
-[api-badge]: https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
+[api-badge]: https://img.shields.io/github/go-mod/go-version/DeBankDeFi/go-ethereum-debank
 [api-url]: https://pkg.go.dev/github.com/cometbft/cometbft
 [go-badge]: https://img.shields.io/badge/go-1.21-blue.svg
 [go-url]: https://github.com/moovweb/gvm
